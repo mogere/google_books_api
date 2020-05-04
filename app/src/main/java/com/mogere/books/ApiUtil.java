@@ -14,7 +14,7 @@ public class ApiUtil {
     public static final String BASE_API_URL = "https://www.googleapis.com/books/v1/volumes";
 
     public static URL buildUrl(String title){
-        String fullUrl = BASE_API_URL + "?q+" +title;
+        String fullUrl = BASE_API_URL + "?q=" +title;
 
         URL url = null;
         try{
