@@ -3,10 +3,15 @@ package com.mogere.books;
 import android.net.Uri;
 import android.util.Log;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class ApiUtil {
@@ -56,4 +61,40 @@ public class ApiUtil {
         }
     }
 
+    public static ArrayList<Book> getBookFromJson(String json){
+        final String ID = "id";
+        final String TITLE = "title";
+        final String SUBTITLE = "subtitle";
+        final String AUTHORS = "authors";
+        final String PUBLISHER = "publisher";
+        final String PUBLISHED_DATE = "publishedDate";
+        final String ITEMS = "items";
+        final String VOLUMEINFO = "volumeInfo";
+
+        ArrayList<Book> books = null;
+        try{
+            JSONObject jsonBooks = new JSONObject(json);
+            JSONArray arrayBooks = jsonBooks.getJSONArray(ITEMS);
+            int numberOfBooks = arrayBooks.length();
+            for(int i = 0; i<numberOfBooks; i++){
+                JSONObject bookJSON = arrayBooks.getJSONObject(i);
+                JSONObject volumeInfoJson = bookJSON.getJSONObject(VOLUMEINFO);
+                int authorNum = volumeInfoJson.getJSONArray(AUTHORS).length();
+                String[] authors = new String[authorNum];
+                for (int j = 0; j<authorNum;j++){
+                    authors[j] = volumeInfoJson.getJSONArray(AUTHORS).get(j).toString();
+                }
+                Book book = new Book(bookJSON.getString(ID), volumeInfoJson.getString(TITLE),
+                        (volumeInfoJson.isNull(SUBTITLE)?"":volumeInfoJson.getString(SUBTITLE)),
+                        authors, volumeInfoJson.getString(PUBLISHER),
+                        volumeInfoJson.getString(PUBLISHED_DATE));
+                books.add(book);
+
+            }
+        }
+        catch (JSONException e){
+            e.printStackTrace();
+        }
+        return books;
+    }
 }
