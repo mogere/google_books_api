@@ -1,6 +1,8 @@
 package com.mogere.books;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -14,6 +16,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     private ProgressBar mLoading;
+    private RecyclerView booksRecycler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,6 +24,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mLoading = (ProgressBar) findViewById(R.id.loading);
+        booksRecycler = (RecyclerView) findViewById(R.id.booksRecycler);
+        LinearLayoutManager booksLayoutManager = new LinearLayoutManager(this,
+                LinearLayoutManager.VERTICAL, false);
+        booksRecycler.setLayoutManager(booksLayoutManager);
+
+
         try {
             URL bookUrl = ApiUtil.buildUrl("cooking");
             new BooksQueryTask().execute(bookUrl);
@@ -51,24 +60,20 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result){
-            TextView mResponse = (TextView) findViewById(R.id.response);
             TextView mError = (TextView) findViewById(R.id.error);
             mLoading.setVisibility(View.INVISIBLE);
             if (result == null){
-                mResponse.setVisibility(View.INVISIBLE);
+                booksRecycler.setVisibility(View.INVISIBLE);
                 mError.setVisibility(View.VISIBLE);
             }
             else{
-                mResponse.setVisibility(View.VISIBLE);
+                booksRecycler.setVisibility(View.VISIBLE);
                 mError.setVisibility(View.INVISIBLE);
             }
 
             ArrayList<Book> books = ApiUtil.getBookFromJson(result);
-            String resultString = "";
-            for(Book book : books){
-                resultString = resultString + book.title + "\n" + book.publishedDate + "\n\n";
-            }
-            mResponse.setText(resultString);
+            BooksAdapter adapter = new BooksAdapter(books);
+            booksRecycler.setAdapter(adapter);
         }
 
         @Override
