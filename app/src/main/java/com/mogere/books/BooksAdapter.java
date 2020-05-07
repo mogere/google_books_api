@@ -40,7 +40,7 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.BookViewHold
         return books.size();
     }
 
-    public class BookViewHolder extends RecyclerView.ViewHolder{
+    public class BookViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         TextView title;
         TextView authorTv;
@@ -54,6 +54,7 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.BookViewHold
             authorTv = (TextView) itemView.findViewById(R.id.authors);
             publishDate = (TextView) itemView.findViewById(R.id.publishedDate);
             publisher = (TextView) itemView.findViewById(R.id.publisher);
+            itemView.setOnClickListener(this);
 
         }
 
@@ -71,6 +72,13 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.BookViewHold
             authorTv.setText(authors);
             publishDate.setText(book.publishedDate);
             publisher.setText(book.publisher);
+        }
+
+        @Override
+        public void onClick(View v) {
+
+            int position = getAdapterPosition();
+            Book
         }
     }
 }
