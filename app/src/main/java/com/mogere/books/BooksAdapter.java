@@ -2,6 +2,7 @@ package com.mogere.books;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,25 +61,18 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.BookViewHold
 
         public void bind(Book book){
             title.setText(book.title);
-            String authors = "";
-            int i = 0;
-            for (String author:book.authors){
-                authors+=author;
-                i++;
-                if(i<book.authors.length){
-                    authors+=" , ";
-                }
-            }
-            authorTv.setText(authors);
+            authorTv.setText(book.authors);
             publishDate.setText(book.publishedDate);
             publisher.setText(book.publisher);
         }
 
         @Override
         public void onClick(View v) {
-
             int position = getAdapterPosition();
-            Book
+            Book selectedBook = books.get(position);
+            Intent intent = new Intent(v.getContext(), BookDetail.class);
+            intent.putExtra("Book", selectedBook);
+            v.getContext().startActivity(intent);
         }
     }
 }
