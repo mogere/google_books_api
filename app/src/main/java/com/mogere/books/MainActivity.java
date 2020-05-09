@@ -35,9 +35,19 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                 LinearLayoutManager.VERTICAL, false);
         booksRecycler.setLayoutManager(booksLayoutManager);
 
+        Intent intent = getIntent();
+        String query = intent.getStringExtra("Query");
+        URL bookUrl;
+
 
         try {
-            URL bookUrl = ApiUtil.buildUrl("cooking");
+            if(query == null || query.isEmpty()) {
+                bookUrl = ApiUtil.buildUrl("cooking");
+            }
+            else
+            {
+                bookUrl = new URL(query);
+            }
             new BooksQueryTask().execute(bookUrl);
         }
         catch (Exception e){
@@ -113,11 +123,12 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             else{
                 booksRecycler.setVisibility(View.VISIBLE);
                 mError.setVisibility(View.INVISIBLE);
+                ArrayList<Book> books = ApiUtil.getBookFromJson(result);
+                BooksAdapter adapter = new BooksAdapter(books);
+                booksRecycler.setAdapter(adapter);
             }
 
-            ArrayList<Book> books = ApiUtil.getBookFromJson(result);
-            BooksAdapter adapter = new BooksAdapter(books);
-            booksRecycler.setAdapter(adapter);
+
         }
 
         @Override

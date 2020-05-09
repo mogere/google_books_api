@@ -75,6 +75,9 @@ public class Book implements Parcelable {
 
     @BindingAdapter({"android:imageUrl"})
     public static void loadImage(ImageView view, String imageUrl){
+        if(!imageUrl.isEmpty())
         Picasso.get().load(imageUrl).placeholder(R.drawable.ic_book).into(view);
+        else
+            view.setBackgroundResource(R.drawable.ic_book);
     }
 }
